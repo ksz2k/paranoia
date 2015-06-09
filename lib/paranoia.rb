@@ -2,7 +2,6 @@ require 'active_record' unless defined? ActiveRecord
 
 module Paranoia
   @@default_sentinel_value = nil
-  @@without = false
 
   # Change default_sentinel_value in a rails initilizer
   def self.default_sentinel_value=(val)
@@ -12,19 +11,19 @@ module Paranoia
   def self.default_sentinel_value
     @@default_sentinel_value
   end
-  
+
   def self.without(&block)
     without!
     block.call
-    @@without = false
+    Thread.current[:without_paranoia] = false
   end
-  
+
   def self.without!
-    @@without = true
+    Thread.current[:without_paranoia] = true
   end
-  
+
   def self.without?
-    @@without == true
+    Thread.current[:without_paranoia] == true
   end
 
   def self.included(klazz)
